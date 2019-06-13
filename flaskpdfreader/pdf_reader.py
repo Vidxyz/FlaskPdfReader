@@ -23,9 +23,14 @@ word_black_list = [',', '.', '!', '?', '"', ':', ';']
 
 # Todo: Unit tests
 def sanitize_stats(stats):
-	cur_index = stats[0][0]
-	cleaned_stats = [];
+
+	cleaned_stats = []
 	word_list_acc = []
+
+	if(len(stats) == 0):
+		return cleaned_stats
+
+	cur_index = stats[0][0]
 	
 	for i in range(len(stats)):
 		if stats[i][0] != cur_index:
@@ -45,6 +50,10 @@ def sanitize_stats(stats):
 # Todo: Unit tests
 def make_json(stats):
 	json_list = []
+
+	if(len(stats) == 0):
+		return json_list
+
 	for each in stats:
 		stat_dict = {}
 		stat_dict['filename'] = each[0]
