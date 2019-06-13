@@ -36,6 +36,9 @@ Open a new terminal instance
 ```
 flask init-db
 ```
+You should see the following
+``
+`Initialized the database.`
 
 ### Use
 Open `http://localhost:5000/` in your browser
@@ -48,7 +51,7 @@ curl -X POST -F 'pdf_file=@current_folder/test_document.pdf' http://localhost:50
 ```
 
 ### GET request
-````
+```
 curl -X GET http://localhost:5000/get-common-words
 ```
 
