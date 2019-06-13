@@ -36,13 +36,16 @@ Open a new terminal instance
 ```
 flask init-db
 ```
+
 You should see the following
-``
+
 `Initialized the database.`
 
 ### Use
 Open `http://localhost:5000/` in your browser
+
 You should see the following
+
 `Hello, World!`
 
 ### POST request
