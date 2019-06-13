@@ -11,7 +11,7 @@ cd FlaskPdfReader
 ```
 
 Create a virtualenv and activate it:
-Note, this project uses python=2.7
+Note, this project uses python 2.7 and SQLite 
 
 ```
 virtualenv venv
@@ -19,8 +19,10 @@ virtualenv venv
 ```
 
 Install FlaskPdfReader:
-`pip install -e .`
-`pip install -r requirements.txt`
+```
+pip install -e .
+pip install -r requirements.txt
+````
 
 Run
 ```
@@ -29,7 +31,7 @@ export FLASK_ENV=development
 flask run
 ```
 
-Open http://127.0.0.1:5000 in a browser.
+Open `http://localhost:5000` in a browser.
 
 Test
 pip install '.[test]'
