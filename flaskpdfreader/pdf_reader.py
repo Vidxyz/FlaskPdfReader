@@ -1,10 +1,11 @@
 import os, operator, collections, sys, re
+import PyPDF2 as pdf_extracter
+from werkzeug.utils import secure_filename
 from flask import Flask
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
-
 from flaskpdfreader.db import get_db
 
 bp = Blueprint('pdf_reader', __name__)
@@ -14,8 +15,6 @@ SQL_PDFSTATS_INSERT = 'INSERT INTO PDFSTATS(pdf_id, rank, word) VALUES (?, ?, ?)
 SQL_FETCH_LAST_ROWID = 'SELECT last_insert_rowid()'
 SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.rank, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
 
-import PyPDF2 as pdf_extracter
-from werkzeug.utils import secure_filename
 
 
 word_black_list = [',', '.', '!', '?', '"', ':', ';']

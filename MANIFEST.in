@@ -1,0 +1,2 @@
+include flaskpdfreader/schema.sql
+global-exclude *.pyc
