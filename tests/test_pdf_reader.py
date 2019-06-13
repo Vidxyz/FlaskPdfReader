@@ -2,11 +2,11 @@ import pytest
 from flaskpdfreader.db import get_db
 
 
-def test_sanitize_stats():
+def test_sanitize_stats(stats):
     pass
 
 
-def test_make_json():
+def test_make_json(stats):
     pass
 
 
