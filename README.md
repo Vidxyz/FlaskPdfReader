@@ -37,7 +37,12 @@ Open a new terminal instance
 flask init-db
 ```
 
-### Open `http://localhost:5000` in a browser.
+### Use
+Open `http://localhost:5000/` in your browser
+
+`Hello, World!`
+
+### POST request
 
 Test
 pip install '.[test]'
