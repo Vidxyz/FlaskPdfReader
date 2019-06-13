@@ -59,10 +59,14 @@ curl -X GET http://localhost:5000/get-common-words
 ```
 
 ### Test
-pip install '.[test]'
+```
 pytest
-Run with coverage report:
+```
 
+### Run with coverage report:
+```
 coverage run -m pytest
 coverage report
-coverage html  # open htmlcov/index.html in a browser
+coverage html  
+```
+Open `htmlcov/index.html` in a browser
