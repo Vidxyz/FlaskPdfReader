@@ -39,10 +39,18 @@ flask init-db
 
 ### Use
 Open `http://localhost:5000/` in your browser
-
+You should see the following
 `Hello, World!`
 
 ### POST request
+```
+curl -X POST -F 'pdf_file=@current_folder/test_document.pdf' http://localhost:5000/upload-file
+```
+
+### GET request
+````
+curl -X GET http://localhost:5000/get-common-words
+```
 
 Test
 pip install '.[test]'
