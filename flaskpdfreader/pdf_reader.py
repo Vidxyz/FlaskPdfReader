@@ -15,7 +15,6 @@ SQL_PDFSTATS_INSERT = 'INSERT INTO PDFSTATS(pdf_id, count, word) VALUES (?, ?, ?
 SQL_FETCH_LAST_ROWID = 'SELECT last_insert_rowid()'
 SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.count, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
 
-
 word_black_list = [',', '.', '!', '?', '"', ':', ';']
 max_common_words = 5
 
