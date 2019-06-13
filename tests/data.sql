@@ -1,0 +1,6 @@
+INSERT INTO pdf (filename, ) VALUES ('sample1.pdf', )
+INSERT INTO pdfstats (pdf_id, count, word) VALUES (1, 8, 'potato')
+INSERT INTO pdfstats (pdf_id, count, word) VALUES (1, 6, 'banana')
+INSERT INTO pdfstats (pdf_id, count, word) VALUES (1, 4, 'bubbles')
+INSERT INTO pdfstats (pdf_id, count, word) VALUES (1, 3, 'hello')
+INSERT INTO pdfstats (pdf_id, count, word) VALUES (1, 1, 'world')

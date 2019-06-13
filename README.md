@@ -58,7 +58,7 @@ curl -X POST -F 'pdf_file=@current_folder/test_document.pdf' http://localhost:50
 curl -X GET http://localhost:5000/get-common-words
 ```
 
-Test
+### Test
 pip install '.[test]'
 pytest
 Run with coverage report:

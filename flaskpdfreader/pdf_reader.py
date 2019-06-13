@@ -11,15 +11,13 @@ from flaskpdfreader.db import get_db
 bp = Blueprint('pdf_reader', __name__)
 
 SQL_PDF_INSERT = 'INSERT INTO PDF(filename) VALUES (?) '
-SQL_PDFSTATS_INSERT = 'INSERT INTO PDFSTATS(pdf_id, rank, word) VALUES (?, ?, ?) '
+SQL_PDFSTATS_INSERT = 'INSERT INTO PDFSTATS(pdf_id, count, word) VALUES (?, ?, ?) '
 SQL_FETCH_LAST_ROWID = 'SELECT last_insert_rowid()'
-SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.rank, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
-
+SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.count, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
 
 
 word_black_list = [',', '.', '!', '?', '"', ':', ';']
-
-
+max_common_words = 5
 
 # Todo: Unit tests
 def sanitize_stats(stats):
@@ -30,7 +28,7 @@ def sanitize_stats(stats):
 	if(len(stats) == 0):
 		return cleaned_stats
 
-	cur_index = stats[0][0]
+	cur_index = stats[0][0] 
 	
 	for i in range(len(stats)):
 		if stats[i][0] != cur_index:
@@ -128,7 +126,7 @@ def process_file():
 			if word in word_black_list:
 				del words[word]
 
-		frequency_list = list(words.most_common(5))
+		frequency_list = list(words.most_common(max_common_words))
 		app.logger.info('Frequency List')
 		app.logger.info(frequency_list)
 
