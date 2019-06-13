@@ -18,7 +18,7 @@ virtualenv venv
 . venv/bin/activate
 ```
 
-### Install FlaskPdfReader:
+### Install FlaskPdfReader
 ```
 pip install -e .
 pip install -r requirements.txt
