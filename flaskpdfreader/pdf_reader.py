@@ -1,19 +1,22 @@
 import os
 from flask import Flask
-from flask import request
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, url_for
+)
+from werkzeug.exceptions import abort
+
+from flaskpdfreader.db import get_db
+
+bp = Blueprint('pdf_reader', __name__)
+
 import PyPDF2 as pdf_extracter
 from werkzeug.utils import secure_filename
-import sqlite3
-
-UPLOAD_FOLDER = 'uploads/'
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ## Accepts a PDF file as post request. PDF file is then processed, and all words are extracted
 ## 5 most common words are determined for the inbound file
 ## A database entry is then made that contains at the minimum (FileName, TimeOfUpload, FiveMostCommonWords)
-@app.route('/upload-file', methods=['GET', 'POST'])
+from flask import current_app as app
+@bp.route('/upload-file', methods=['GET', 'POST'])
 def process_file():
 	if request.method == 'GET':
 		return 'Invalid Request Method. Expected POST request!\n'
@@ -50,7 +53,9 @@ def process_file():
 			page_object = pdf_reader.getPage(i)
 			lines_of_text = page_object.extractText()
 			print(lines_of_text)
-			
+		
+		# Use DB connection object here
+
 
 		# Must delete PDF file after processing contents
 		os.remove(pdf_path)
@@ -61,9 +66,9 @@ def process_file():
 ## Makes database call tgo query information previously inserted via process_file()
 ## Returns at the very least, the name of file, time of upload and the 5 most common words for 
 ## all previously uploaded PDF's
-@app.route('/get-common-words')
+@bp.route('/get-common-words')
 def get_common_words():
 	if request.method == 'GET':
-		return 'Hello, World!\n'
+		return 'No common words yet!\n'
    	else: 
-		return 'Hello, World!\n'
+		return 'Invalid Request Method. Expected GET request!\n'
