@@ -42,7 +42,7 @@ You should see the following
 `Initialized the database.`
 
 ### Use
-Open `http://localhost:5000/` in your browser
+Open `http://localhost:5000/hello` in your browser
 
 You should see the following
 
