@@ -4,13 +4,13 @@ Simple Flask App that reads a PDF and summarizes contents
 
 ## Steps to run
 
-# clone the repository
+### clone the repository
 ```
 git clone https://github.com/Vidxyz/FlaskPdfReader.git
 cd FlaskPdfReader
 ```
 
-Create a virtualenv and activate it:
+### Create a virtualenv and activate it:
 Note, this project uses python 2.7 and SQLite 
 
 ```
@@ -18,20 +18,20 @@ virtualenv venv
 . venv/bin/activate
 ```
 
-Install FlaskPdfReader:
+### Install FlaskPdfReader:
 ```
 pip install -e .
 pip install -r requirements.txt
 ````
 
-Run
+### Run
 ```
 export FLASK_APP=flaskpdfreader
 export FLASK_ENV=development
 flask run
 ```
 
-Open `http://localhost:5000` in a browser.
+### Open `http://localhost:5000` in a browser.
 
 Test
 pip install '.[test]'
