@@ -1,7 +1,7 @@
-import os
+import os, operator, collections, sys, re
 from flask import Flask
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -9,8 +9,30 @@ from flaskpdfreader.db import get_db
 
 bp = Blueprint('pdf_reader', __name__)
 
+SQL_PDF_INSERT = 'INSERT INTO PDF(filename) VALUES (?) '
+SQL_PDFSTATS_INSERT = 'INSERT INTO PDFSTATS(pdf_id, rank, word) VALUES (?, ?, ?) '
+SQL_FETCH_LAST_ROWID = 'SELECT last_insert_rowid()'
+SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.rank, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
+
+# SQL_FETCH_STATS = 'SELECT p.id, p.filename, p.created, s.rank, s.word from PDF p, PDFSTATS s WHERE p.id = s.pdf_id'
+
 import PyPDF2 as pdf_extracter
 from werkzeug.utils import secure_filename
+
+
+word_black_list = [',', '.', '!', '?', '"', ':', ';']
+# Sanitizes the long line of text that come in
+# Removes all punctuations. Including ',' '.' '!' '?' '"' ':' ';' 
+def sanitize(text):
+	cleaned_text = []
+	for letter in text:
+		if letter in sanitize_list:
+			pass
+		else:
+			cleaned_text.append(letter)
+
+	return cleaned_text
+
 
 ## Accepts a PDF file as post request. PDF file is then processed, and all words are extracted
 ## 5 most common words are determined for the inbound file
@@ -35,8 +57,9 @@ def process_file():
 		# 7. Return success response
 
 		pdf_file = request.files['pdf_file']
-		print('PDF file received with filename ' + secure_filename(pdf_file.filename))
 		pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(pdf_file.filename))
+		
+		print('PDF file received with filename ' + secure_filename(pdf_file.filename))
 		print('PDF save path is ' + pdf_path)
 		pdf_file.save(pdf_path)
 		
@@ -49,18 +72,90 @@ def process_file():
 
 		print('Number of pages = ' + str(pdf_reader.numPages) + '\n')
 
+		frequency_list = []
+		complete_lines_of_text = ''
+		# Do calculation of common words here
 		for i in range(pdf_reader.numPages):
 			page_object = pdf_reader.getPage(i)
-			lines_of_text = page_object.extractText()
-			print(lines_of_text)
-		
-		# Use DB connection object here
+			lines_of_text = page_object.extractText().lower()
+			complete_lines_of_text = complete_lines_of_text + lines_of_text
 
+
+		words_of_text = re.findall(r"[\w']+|[.,!?;]", complete_lines_of_text)
+		words = collections.Counter(words_of_text)
+
+		for word in list(words):
+			if word in word_black_list:
+				del words[word]
+
+		frequency_list = list(words.most_common(5))
+		print(frequency_list)
+
+		error = None
+		# Use DB connection object here
+		if not pdf_file:
+			error = 'PDF File required'
+
+		if error is not None:
+			flash(error)
+		else:
+			db = get_db()
+			# Insert into PDF table
+			db.execute(SQL_PDF_INSERT, (secure_filename(pdf_file.filename), ))
+			current_id = db.execute(SQL_FETCH_LAST_ROWID).fetchall()[0][0]
+			# Insert into PDFSTATS table
+			for pair in frequency_list:
+				db.execute(SQL_PDFSTATS_INSERT, (current_id, pair[1], pair[0]))
+
+			# db.execute()
+			db.commit()
 
 		# Must delete PDF file after processing contents
 		os.remove(pdf_path)
-		return 'Hello, World!\n' 
 
+
+		return 'PDF Save successful!!\n' 
+
+# Todo: Unit tests
+def sanitize_stats(stats):
+	cur_index = stats[0][0]
+	cleaned_stats = [];
+	word_list_acc = []
+	
+	for i in range(len(stats)):
+		if stats[i][0] != cur_index:
+			cur_index = stats[i][0];
+			# Index has changed. We have to update stats
+			cleaned_stats.append([stats[i-1][1], stats[i-1][2], word_list_acc])
+			word_list_acc = []
+
+		word_list_acc.append((stats[i][4], stats[i][3]))
+
+
+	# Append last set of stats
+	cleaned_stats.append([stats[len(stats) - 1][1], stats[len(stats) - 1][2], word_list_acc])
+	return cleaned_stats
+
+
+# Todo: Unit tests
+def make_json(stats):
+	json_list = []
+	for each in stats:
+		stat_dict = {}
+		stat_dict['filename'] = each[0]
+		stat_dict['timestamp'] = each[1]
+		most_common_list = []
+		
+		for entry in each[2]:
+			word_pair = {}
+			word_pair['word'] = entry[0]
+			word_pair['count'] = entry[1]
+			most_common_list.append(word_pair)
+
+		stat_dict['most_common_words'] = most_common_list
+		json_list.append(stat_dict)
+
+	return json_list
 
 
 ## Makes database call tgo query information previously inserted via process_file()
@@ -69,6 +164,23 @@ def process_file():
 @bp.route('/get-common-words')
 def get_common_words():
 	if request.method == 'GET':
-		return 'No common words yet!\n'
+		db = get_db()
+		stats = db.execute(SQL_PDFSTATS_VIEW).fetchall()
+
+		for entry in stats:
+			print(entry)
+
+		cleaned_stats = sanitize_stats(stats)
+		print cleaned_stats
+		
+		json_stats = make_json(cleaned_stats)
+
+		response = {}	
+
+		# Must return response object of type
+		# response = {filename: '', timestamp: '', most_common_words: []}
+
+
+		return jsonify(json_stats)
    	else: 
 		return 'Invalid Request Method. Expected GET request!\n'
