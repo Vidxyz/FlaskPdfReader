@@ -144,9 +144,9 @@ def test_make_json():
     assert json_stats == JSON_SECOND_STATS
 
 
-def test_process_file():
+def test_process_file(client):
     pass
 
 
-def test_get_common_words():
+def test_get_common_words(client):
     pass

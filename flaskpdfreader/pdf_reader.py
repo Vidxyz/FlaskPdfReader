@@ -143,7 +143,7 @@ def process_file():
 		pdf_obj = open(pdf_path, 'rb')
 		pdf_reader = pdf_extracter.PdfFileReader(pdf_obj)
 
-		# Make sure to catch exceptions over here
+		# Make sure to catch exceptions that may arise
 		if pdf_reader.isEncrypted:
 			pdf_reader.decrypt('')
 
