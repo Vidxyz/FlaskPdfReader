@@ -18,7 +18,21 @@ SQL_PDFSTATS_VIEW   = 'SELECT p.id, p.filename, p.created, s.count, s.word from 
 word_black_list = [',', '.', '!', '?', '"', ':', ';']
 max_common_words = 5
 
-# Todo: Unit tests
+# Sanitizes a set of rows returned from the SQLite database
+# Incoming format:
+# [ (id1, name1, datetime1, count11, word11),
+#   (id1, name1, datetime1, count12, word12)
+#	...
+#   (id1, name1, datetime1, count15, word15),
+#   (id2, name2, datetime2, count21, word21),
+#   (id2, name2, datetime2, count22, word22),
+#   ...
+#  ]
+#  Output Format:
+# [  (name1, datetime1, [(word11, count11), (word12, count 12) ... (word15, count15)])
+#    (name2, datetime2, [(word11, count11), (word12, count 12) ... (word15, count15)])
+#    ...
+#  ]
 def sanitize_stats(stats):
 
 	cleaned_stats = []
@@ -44,7 +58,37 @@ def sanitize_stats(stats):
 	return cleaned_stats
 
 
-# Todo: Unit tests
+# Converts sanitizes stats to a more JSON-like dict-style structure
+# Ensures all key info are key-value pairs 
+# Incoming format:
+# [  (name1, datetime1, [(word11, count11), (word12, count 12) ... (word15, count15)])
+#    (name2, datetime2, [(word11, count11), (word12, count 12) ... (word15, count15)])
+#    ...
+#  ]
+#
+# Outgoing format:
+# [{
+#		filename:name1,
+#		timestamp:datetime1
+# 		most_common_words: [
+# 		{
+# 			word: word11
+# 			count: count11
+# 		},
+#		{
+# 			word: word12
+# 			count: count12
+# 		},
+#		...
+#		{
+# 			word: word15
+# 			count: count15
+# 		},
+#		]
+#  },
+#	...
+#  ]
+
 def make_json(stats):
 	json_list = []
 
