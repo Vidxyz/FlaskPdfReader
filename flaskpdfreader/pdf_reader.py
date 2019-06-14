@@ -88,7 +88,6 @@ def sanitize_stats(stats):
 #  },
 #	...
 #  ]
-
 def make_json(stats):
 	json_list = []
 
@@ -121,7 +120,6 @@ def process_file():
 	if request.method == 'GET':
 		return 'Invalid Request Method. Expected POST request!\n'
 	else:
-		# Do processing here
 		# Overview of steps
 		# 1. Initialize database - if database schema already exists, then re-use it
 		# 2. Save pdf file to temp storage 
@@ -129,8 +127,9 @@ def process_file():
 		#    3.1 - Solution can be extended to further pdf formats with images, would require 
 		#		   more powerful processing libraries
 		# 4. Go through each word extracted, and repeatedly compute the most commonly occuring words
+		#    4.1 - If incoming file is empty, then we throw an error and do NOT save file contents/info
 		# 5. Store results in database
-		#    5.1 - Assumption here is made that an inbound file with already existing filename in DB is overwritten
+		#    5.1 - Inbound files with same name as an earlier file is accepted. Unique timestamp
 		# 6. Delete temporary file from storage
 		# 7. Return success response
 

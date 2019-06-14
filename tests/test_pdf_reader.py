@@ -116,9 +116,6 @@ JSON_SECOND_STATS = [
                     ]
 
 
-
-
-
 def test_sanitize_stats():
     stats = EMPTY_TESTING_STATS
     cleaned_stats = sanitize_stats(stats)
