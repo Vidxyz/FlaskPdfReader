@@ -149,4 +149,5 @@ def test_process_file(client):
 
 
 def test_get_common_words(client):
-    pass
+    response = client.get('/get-common-words')
+    assert response.status_code == 200
