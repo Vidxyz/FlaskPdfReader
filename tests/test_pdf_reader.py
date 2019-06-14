@@ -2,6 +2,8 @@ import pytest
 import unittest
 import datetime
 from flaskpdfreader.pdf_reader import *
+from StringIO import StringIO
+
 
 
 EMPTY_TESTING_STATS = []
@@ -145,9 +147,14 @@ def test_make_json():
 
 
 def test_process_file(client):
+    # Figure out how to send the right POST request
+    # And how to mock the file being sent possibly
+    # Else we're gonna have to include the samples folder
+    # Test response here
     pass
 
 
 def test_get_common_words(client):
     response = client.get('/get-common-words')
     assert response.status_code == 200
+    # Test actual contents of the response here
